@@ -1,0 +1,42 @@
+name: Build and Deploy SDL2 OpenGL Emscripten
+
+on:
+  push:
+    branches:
+      - main # Zmiana nazwy brancha na glowny, jesli uzywasz master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Emscripten SDK
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git
+          cd emsdk
+          ./emsdk install latest
+          ./emsdk activate latest
+        shell: bash
+
+      - name: Compile C++ to WebAssembly
+        run: |
+          source emsdk/emsdk_env.sh
+          mkdir -p dist
+          emcc gl.c \
+            -s WASM=1 \
+            -s USE_SDL=2 \
+            -s USE_WEBGL2=1 \
+            -s MIN_WEBGL_VERSION=2 \
+            -s MAX_WEBGL_VERSION=2 \
+            -lGL \
+            -o dist/index.html
+        shell: bash
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main' # Zmiana nazwy brancha
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
