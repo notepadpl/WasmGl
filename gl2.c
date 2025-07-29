@@ -11,7 +11,7 @@ SDL_GLContext gContext;
 
 // Inicjalizacja SDL i OpenGL
 bool init() {
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL nie mogło się zainicjalizować! SDL_Error: %s\n", SDL_GetError());
         return false;
     }
