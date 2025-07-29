@@ -34,14 +34,14 @@ bool init() {
                                SCREEN_WIDTH, SCREEN_HEIGHT,
                                SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
-    if (gWindow == NULL {
+    if (gWindow == NULL) {
         printf("Nie można utworzyć okna! SDL_Error: %s\n", SDL_GetError());
         return false;
     }
 
     // Tworzenie kontekstu OpenGL
     gContext = SDL_GL_CreateContext(gWindow);
-    if (gContext == NULL {
+    if (gContext == NULL) {
         printf("Nie można utworzyć kontekstu OpenGL! SDL_Error: %s\n", SDL_GetError());
         return false;
     }
