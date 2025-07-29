@@ -6,7 +6,7 @@
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
-SDL_Window* gWindow = nullptr;
+SDL_Window* gWindow = NULL;
 SDL_GLContext gContext;
 
 // Inicjalizacja SDL i OpenGL
@@ -34,14 +34,14 @@ bool init() {
                                SCREEN_WIDTH, SCREEN_HEIGHT,
                                SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
-    if (gWindow == nullptr) {
+    if (gWindow == NULL {
         printf("Nie można utworzyć okna! SDL_Error: %s\n", SDL_GetError());
         return false;
     }
 
     // Tworzenie kontekstu OpenGL
     gContext = SDL_GL_CreateContext(gWindow);
-    if (gContext == nullptr) {
+    if (gContext == NULL {
         printf("Nie można utworzyć kontekstu OpenGL! SDL_Error: %s\n", SDL_GetError());
         return false;
     }
