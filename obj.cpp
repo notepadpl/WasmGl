@@ -3,7 +3,7 @@
 #include <emscripten.h>
 #include <cmath>
 #include <stdio.h>
-#include "obj_loader.h"
+#include "loadObj2.h"
 
 SDL_Window* window;
 SDL_GLContext glContext;
