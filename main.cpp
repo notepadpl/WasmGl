@@ -62,7 +62,7 @@ bool init(){
     glContext = SDL_GL_CreateContext(window);
     glViewport(0,0,800,600);
 
-    mesh = loadObjMtl("assets/cube.obj", materials, "assets/");
+    mesh = loadObjMtl("asserts/cube.obj", materials, "asserts/");
     printf("Verts: %zu, idx: %zu\n", mesh.vertices.size()/8, mesh.indices.size());
 
     GLuint vsId = compileShader(GL_VERTEX_SHADER, vs);
