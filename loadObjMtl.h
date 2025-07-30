@@ -29,7 +29,7 @@ inline Mesh loadObjMtl(const char* objPath, std::unordered_map<std::string, Mate
         std::string type; iss >> type;
         if (type=="mtllib") {
             std::string mtl; iss >> mtl;
-            std::ifstream m(in, std::string(baseDir)+mtl);
+            std::ifstream m(std::string(baseDir) + mtl);
             std::string l;
             Material mat;
             std::string name;
