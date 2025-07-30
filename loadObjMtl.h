@@ -71,27 +71,29 @@ inline Mesh loadObjMtl(const char* objPath, std::unordered_map<std::string, Mate
     // build interleaved buffer
     std::unordered_map<std::string,int> matIdMap;
     int idx=0;
-    std::map<std::tuple<int,int,int>, int> unique;
-    for (size_t i=0; i<faceData.size(); ++i) {
-        auto t = faceData[i];
-        if (unique.count(t)==0) {
-            unique[t] = idx++;
-            auto [vi, ti, ni] = t;
-            mesh.vertices.push_back(pos[vi*3+0]);
-            mesh.vertices.push_back(pos[vi*3+1]);
-            mesh.vertices.push_back(pos[vi*3+2]);
-            if (ti>=0) {
-                mesh.vertices.push_back(uv[ti*2+0]);
-                mesh.vertices.push_back(uv[ti*2+1]);
-            } else mesh.vertices.insert(mesh.vertices.end(),{0,0});
-            if (ni>=0) {
-                mesh.vertices.push_back(norm[ni*3+0]);
-                mesh.vertices.push_back(norm[ni*3+1]);
-                mesh.vertices.push_back(norm[ni*3+2]);
-            } else mesh.vertices.insert(mesh.vertices.end(),{0,0,1});
-        }
-        mesh.indices.push_back(unique[t]);
+    std::map<std::tuple<int,int,int>, int> uniqueMap;
+int idx=0;
+for (size_t i=0; i<faceData.size(); ++i) {
+    auto t = faceData[i];
+    if (uniqueMap.count(t) == 0) {
+        uniqueMap[t] = idx++;
+        auto [vi, ti, ni] = t;
+        mesh.vertices.push_back(pos[vi*3+0]);
+        mesh.vertices.push_back(pos[vi*3+1]);
+        mesh.vertices.push_back(pos[vi*3+2]);
+        if (ti >= 0) {
+            mesh.vertices.push_back(uv[ti*2+0]);
+            mesh.vertices.push_back(uv[ti*2+1]);
+        } else mesh.vertices.insert(mesh.vertices.end(), {0,0});
+        if (ni >= 0) {
+            mesh.vertices.push_back(norm[ni*3+0]);
+            mesh.vertices.push_back(norm[ni*3+1]);
+            mesh.vertices.push_back(norm[ni*3+2]);
+        } else mesh.vertices.insert(mesh.vertices.end(), {0,0,1});
     }
+    mesh.indices.push_back(uniqueMap[t]);
+}
+
 
     return mesh;
 }
