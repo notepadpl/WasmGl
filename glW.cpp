@@ -155,9 +155,30 @@ void cleanup() {
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
+void main_loop() {
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        if (e.type == SDL_QUIT) {
+            emscripten_cancel_main_loop();
+        }
+        else if (e.type == SDL_MOUSEBUTTONDOWN) {
+            if (e.button.button == SDL_BUTTON_LEFT) {
+                // Zmieniamy stan animacji (pauza <-> play)
+                isAnimating = !isAnimating;
+            }
+        }
+    }
+
+    // Jeśli animacja jest aktywna, zwiększamy czas
+    if (isAnimating) {
+        timeElapsed += 0.01f;
+    }
+
+    render();
+}
 
 // Główna pętla aplikacji
-void main_loop() {
+void main_loop2() {
     // Aktualizacja czasu (w radianach)
     timeElapsed += 0.01f;
 
