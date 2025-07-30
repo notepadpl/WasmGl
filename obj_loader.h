@@ -2,8 +2,11 @@
 #include <vector>
 #include <string>
 
+
+
 struct Mesh {
     std::vector<float> vertices; // x,y,z
+
     std::vector<unsigned int> indices;
 };
 
@@ -25,9 +28,8 @@ Mesh loadObjSimple(const std::string& path) {
             positions.push_back(z);
         }
         else if (line[0] == 'f' && line[1] == ' ') {
-            unsigned int i1, i2, i3;
-            sscanf(line, "f %u %u %u", &i1, &i2, &i3);
-            // OBJ jest 1-indexed
+            unsigned short i1, i2, i3;
+            sscanf(line, "f %hu %hu %hu", &i1, &i2, &i3);// OBJ jest 1-indexed
             mesh.indices.push_back(i1 - 1);
             mesh.indices.push_back(i2 - 1);
             mesh.indices.push_back(i3 - 1);
