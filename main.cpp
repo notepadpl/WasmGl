@@ -18,8 +18,13 @@ int lastX, lastY;
 const char* vs = R"(
 attribute vec3 aPos;
 attribute vec2 aUV;
+attribute vec3 aNormal;
+
 varying vec2 vUV;
+varying vec3 vNormal;
+
 uniform float rotX, rotY;
+
 void main(){
     float cx = cos(rotX), sx=sin(rotX);
     float cy = cos(rotY), sy=sin(rotY);
@@ -29,8 +34,10 @@ void main(){
     gl_Position = vec4(p * 0.5 + vec3(0.0, 0.0, -1.0), 1.0);
 
     vUV = aUV;
+    vNormal = normalize(Ry * Rx * aNormal);
 }
 )";
+
 const char* fs = R"(
 precision mediump float;
 
@@ -47,8 +54,8 @@ void main() {
 
     gl_FragColor = vec4(color, texColor.a);
 }
-
 )";
+
 GLuint compileShader(GLenum type, const char* source) {
     GLuint shader = glCreateShader(type);
     glShaderSource(shader, 1, &source, nullptr);
@@ -73,8 +80,8 @@ bool init(){
     glContext = SDL_GL_CreateContext(window);
     glViewport(0,0,800,600);
 
-    glEnable(GL_DEPTH_TEST);                  // Włącz test głębi
-    glClearColor(1.0f, 0.1f, 0.1f, 1.0f);    // Ustaw ciemnoszare tło
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(1.0f, 0.1f, 0.1f, 1.0f);
 
     mesh = loadObjMtl("asserts/cube.obj", materials, "asserts/");
     printf("Verts: %zu, idx: %zu\n", mesh.vertices.size()/8, mesh.indices.size());
@@ -82,17 +89,21 @@ bool init(){
     GLuint vsId = compileShader(GL_VERTEX_SHADER, vs);
     GLuint fsId = compileShader(GL_FRAGMENT_SHADER, fs);
     program = glCreateProgram();
-    glAttachShader(program, vsId); glAttachShader(program, fsId);
+    glAttachShader(program, vsId);
+    glAttachShader(program, fsId);
     glBindAttribLocation(program, 0, "aPos");
     glBindAttribLocation(program, 1, "aUV");
+    glBindAttribLocation(program, 2, "aNormal");
     glLinkProgram(program);
 
-    glGenBuffers(1,&vbo); glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glGenBuffers(1,&vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, mesh.vertices.size()*sizeof(float), mesh.vertices.data(), GL_STATIC_DRAW);
-    glGenBuffers(1,&ibo); glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+    glGenBuffers(1,&ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.indices.size()*sizeof(unsigned int), mesh.indices.data(), GL_STATIC_DRAW);
 
-    // load texture
     Material& mat = materials.begin()->second;
     int w,h,comp;
     unsigned char* data = stbi_load((std::string("asserts/")+mat.texPath).c_str(), &w,&h,&comp,4);
@@ -100,14 +111,15 @@ bool init(){
         printf("Failed to load texture: %s\n", (std::string("asserts/")+mat.texPath).c_str());
         return false;
     }
-    glGenTextures(1,&tex); glBindTexture(GL_TEXTURE_2D,tex);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA, w,h,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+    glGenTextures(1,&tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,w,h,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     stbi_image_free(data);
 
     glUseProgram(program);
-    glUniform1i(glGetUniformLocation(program, "tex"), 0);   // Podłącz sampler do TEXTURE0
+    glUniform1i(glGetUniformLocation(program, "tex"), 0);
 
     return true;
 }
@@ -117,37 +129,40 @@ void render(){
 
     glUseProgram(program);
 
-    glBindBuffer(GL_ARRAY_BUFFER,vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)0);
-    //glEnableVertexAttribArray(1);
-    //glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)(3*sizeof(float)));
-glEnableVertexAttribArray(2);
-glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-    
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)(3*sizeof(float)));
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)(5*sizeof(float)));
+
     glUniform1f(glGetUniformLocation(program,"rotX"),rotX);
     glUniform1f(glGetUniformLocation(program,"rotY"),rotY);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
 
-    glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT,0);
+    glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+
     SDL_GL_SwapWindow(window);
 }
 
 void loop(){
     SDL_Event e;
     while(SDL_PollEvent(&e)){
-        if (e.type==SDL_QUIT) emscripten_cancel_main_loop();
-        else if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button==SDL_BUTTON_LEFT){
-            mouseDown=true; lastX=e.button.x; lastY=e.button.y;
-        } else if(e.type==SDL_MOUSEBUTTONUP && e.button.button==SDL_BUTTON_LEFT){
-            mouseDown=false;
-        } else if(e.type==SDL_MOUSEMOTION && mouseDown){
-            rotY += (e.motion.x - lastX)*0.01f;
-            rotX += (e.motion.y - lastY)*0.01f;
+        if (e.type == SDL_QUIT) emscripten_cancel_main_loop();
+        else if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT){
+            mouseDown = true; lastX = e.button.x; lastY = e.button.y;
+        } else if(e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT){
+            mouseDown = false;
+        } else if(e.type == SDL_MOUSEMOTION && mouseDown){
+            rotY += (e.motion.x - lastX) * 0.01f;
+            rotX += (e.motion.y - lastY) * 0.01f;
             lastX = e.motion.x; lastY = e.motion.y;
         }
     }
@@ -155,7 +170,10 @@ void loop(){
 }
 
 int main(){
-    init();
+    if (!init()) {
+        printf("Initialization failed!\n");
+        return 1;
+    }
     emscripten_set_main_loop(loop, 0, 1);
     return 0;
 }
