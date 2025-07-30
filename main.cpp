@@ -38,6 +38,21 @@ void main(){
     gl_FragColor = texture2D(tex, vUV);
 }
 )";
+GLuint compileShader(GLenum type, const char* source) {
+    GLuint shader = glCreateShader(type);
+    glShaderSource(shader, 1, &source, nullptr);
+    glCompileShader(shader);
+
+    GLint success;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        char infoLog[512];
+        glGetShaderInfoLog(shader, 512, nullptr, infoLog);
+        printf("Shader compilation failed: %s\n", infoLog);
+        return 0;
+    }
+    return shader;
+}
 
 bool init(){
     SDL_Init(SDL_INIT_VIDEO);
