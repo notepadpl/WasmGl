@@ -36,7 +36,8 @@ bool init() {
     window = SDL_CreateWindow("OBJ Viewer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               640, 480, SDL_WINDOW_OPENGL);
     glContext = SDL_GL_CreateContext(window);
-    glClearColor(0.2f,0.2f,0.2f,1);
+    glClearColor(0.1f, 0.9f, 0.1f, 1.0f); // zielone tło
+
 
     // wczytaj model
     mesh = loadObjSimple("asserts/cube2.obj");
