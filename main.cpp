@@ -26,7 +26,8 @@ void main(){
     mat3 Rx = mat3(1,0,0, 0,cx,-sx, 0,sx,cx);
     mat3 Ry = mat3(cy,0,sy, 0,1,0, -sy,0,cy);
     vec3 p = Ry * Rx * aPos;
-    gl_Position = vec4(p,1.0);
+    gl_Position = vec4(p * 0.5 + vec3(0.0, 0.0, -1.0), 1.0);
+
     vUV = aUV;
 }
 )";
@@ -61,6 +62,8 @@ bool init(){
     window = SDL_CreateWindow("Obj+Mtl Loader", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800,600, SDL_WINDOW_OPENGL);
     glContext = SDL_GL_CreateContext(window);
     glViewport(0,0,800,600);
+glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
+glEnable(GL_DEPTH_TEST);
 
     mesh = loadObjMtl("asserts/cube.obj", materials, "asserts/");
     printf("Verts: %zu, idx: %zu\n", mesh.vertices.size()/8, mesh.indices.size());
