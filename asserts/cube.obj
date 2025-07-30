@@ -1,4 +1,4 @@
-# Simple textured cube
+# Simple textured cube - triangulated
 
 mtllib cube.mtl
 o Cube
@@ -19,9 +19,26 @@ vt 0 1
 
 usemtl CubeMaterial
 
-f 1/1 2/2 3/3 4/4
-f 5/1 8/4 7/3 6/2
-f 1/1 5/2 6/3 2/4
-f 2/1 6/2 7/3 3/4
-f 3/1 7/2 8/3 4/4
-f 5/1 1/2 4/3 8/4
+# front face
+f 1/1 2/2 3/3
+f 1/1 3/3 4/4
+
+# back face
+f 5/1 8/4 7/3
+f 5/1 7/3 6/2
+
+# bottom face
+f 1/1 5/2 6/3
+f 1/1 6/3 2/4
+
+# right face
+f 2/1 6/2 7/3
+f 2/1 7/3 3/4
+
+# top face
+f 3/1 7/2 8/3
+f 3/1 8/3 4/4
+
+# left face
+f 5/1 1/2 4/3
+f 5/1 4/3 8/4
