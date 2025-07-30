@@ -39,7 +39,7 @@ bool init() {
     glClearColor(0.2f,0.2f,0.2f,1);
 
     // wczytaj model
-    mesh = loadObjSimple("assets/cube2.obj");
+    mesh = loadObjSimple("asserts/cube2.obj");
     printf("Vertices: %zu, Indices: %zu\n", mesh.vertices.size()/3, mesh.indices.size()/3);
 
     //compile and link shaders...
