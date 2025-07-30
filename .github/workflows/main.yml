@@ -32,7 +32,7 @@ jobs:
             -s FULL_ES2=1 \
             -s MIN_WEBGL_VERSION=1 \
             -s MAX_WEBGL_VERSION=1 \
-            --preload-file assets/cube2.obj \
+            --preload-file asserts/cube2.obj \
             -o dist/index.html
         shell: bash
 
