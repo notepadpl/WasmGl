@@ -1,5 +1,5 @@
 #include <SDL.h>
-#include <SDL_opengl.h>
+#include <GLES2/gl2.h>
 #include <emscripten.h>
 #include <stdio.h>
 
