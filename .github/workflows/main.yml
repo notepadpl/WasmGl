@@ -3,7 +3,7 @@ name: Build and Deploy SDL2 OpenGL Emscripten
 on:
   push:
     branches:
-      - main # Zmiana nazwy brancha na glowny, jesli uzywasz master
+      - main
 
 jobs:
   build-and-deploy:
@@ -16,28 +16,30 @@ jobs:
         run: |
           git clone https://github.com/emscripten-core/emsdk.git
           cd emsdk
-          ./emsdk install latest
-          ./emsdk activate latest
+          ./emsdk install 3.1.65
+          ./emsdk activate 3.1.65
         shell: bash
 
       - name: Compile C++ to WebAssembly
         run: |
-          source emsdk/emsdk_env.sh
+          cd emsdk
+          source ./emsdk_env.sh
+          cd ..
           mkdir -p dist
           em++ obj.cpp \
-               obj_loader.h \
             -s WASM=1 \
             -s USE_SDL=2 \
             -s FULL_ES2=1 \
             -s MIN_WEBGL_VERSION=1 \
             -s MAX_WEBGL_VERSION=1 \
-            --preload-file assets/cube2.obj
+            --preload-file assets/cube2.obj \
             -o dist/index.html
         shell: bash
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
-        if: github.ref == 'refs/heads/main' # Zmiana nazwy brancha
+        if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+          
