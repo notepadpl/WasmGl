@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <fstream>
 #include <sstream>
+#include <map>
 
 struct Mesh {
     std::vector<float> vertices; // x,y,z, u,v, nx,ny,nz
@@ -70,7 +71,7 @@ inline Mesh loadObjMtl(const char* objPath, std::unordered_map<std::string, Mate
 
     // build interleaved buffer
     std::unordered_map<std::string,int> matIdMap;
-    int idx=0;
+    
     std::map<std::tuple<int,int,int>, int> uniqueMap;
 int idx=0;
 for (size_t i=0; i<faceData.size(); ++i) {
