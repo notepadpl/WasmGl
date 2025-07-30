@@ -62,8 +62,9 @@ bool init(){
     window = SDL_CreateWindow("Obj+Mtl Loader", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800,600, SDL_WINDOW_OPENGL);
     glContext = SDL_GL_CreateContext(window);
     glViewport(0,0,800,600);
-glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
-glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_DEPTH_TEST);                  // Włącz test głębi
+    glClearColor(1.0f, 0.1f, 0.1f, 1.0f);    // Ustaw ciemnoszare tło
 
     mesh = loadObjMtl("asserts/cube.obj", materials, "asserts/");
     printf("Verts: %zu, idx: %zu\n", mesh.vertices.size()/8, mesh.indices.size());
@@ -84,28 +85,42 @@ glEnable(GL_DEPTH_TEST);
     // load texture
     Material& mat = materials.begin()->second;
     int w,h,comp;
-    unsigned char* data = stbi_load((std::string("assets/")+mat.texPath).c_str(), &w,&h,&comp,4);
+    unsigned char* data = stbi_load((std::string("asserts/")+mat.texPath).c_str(), &w,&h,&comp,4);
+    if (!data) {
+        printf("Failed to load texture: %s\n", (std::string("asserts/")+mat.texPath).c_str());
+        return false;
+    }
     glGenTextures(1,&tex); glBindTexture(GL_TEXTURE_2D,tex);
     glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA, w,h,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     stbi_image_free(data);
 
+    glUseProgram(program);
+    glUniform1i(glGetUniformLocation(program, "tex"), 0);   // Podłącz sampler do TEXTURE0
+
     return true;
 }
 
 void render(){
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     glUseProgram(program);
+
     glBindBuffer(GL_ARRAY_BUFFER,vbo);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)(3*sizeof(float)));
+
     glUniform1f(glGetUniformLocation(program,"rotX"),rotX);
     glUniform1f(glGetUniformLocation(program,"rotY"),rotY);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ibo);
+
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,tex);
+
     glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT,0);
     SDL_GL_SwapWindow(window);
 }
