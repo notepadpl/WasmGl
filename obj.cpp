@@ -39,10 +39,10 @@ bool init() {
     glClearColor(0.2f,0.2f,0.2f,1);
 
     // wczytaj model
-    mesh = loadObjSimple("model.obj");
+    mesh = loadObjSimple("assets/cube2.obj");
     printf("Vertices: %zu, Indices: %zu\n", mesh.vertices.size()/3, mesh.indices.size()/3);
 
-    compile and link shaders...
+    //compile and link shaders...
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, mesh.vertices.size()*sizeof(float), mesh.vertices.data(), GL_STATIC_DRAW);
