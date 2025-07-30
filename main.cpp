@@ -33,11 +33,21 @@ void main(){
 )";
 const char* fs = R"(
 precision mediump float;
+
 varying vec2 vUV;
+varying vec3 vNormal;
 uniform sampler2D tex;
-void main(){
-    gl_FragColor = texture2D(tex, vUV);
+
+void main() {
+    vec3 lightDir = normalize(vec3(0.5, 1.0, 0.75));
+    float diff = max(dot(vNormal, lightDir), 0.0);
+
+    vec4 texColor = texture2D(tex, vUV);
+    vec3 color = texColor.rgb * diff;
+
+    gl_FragColor = vec4(color, texColor.a);
 }
+
 )";
 GLuint compileShader(GLenum type, const char* source) {
     GLuint shader = glCreateShader(type);
@@ -110,9 +120,11 @@ void render(){
     glBindBuffer(GL_ARRAY_BUFFER,vbo);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)(3*sizeof(float)));
-
+    //glEnableVertexAttribArray(1);
+    //glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,8*sizeof(float),(void*)(3*sizeof(float)));
+glEnableVertexAttribArray(2);
+glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+    
     glUniform1f(glGetUniformLocation(program,"rotX"),rotX);
     glUniform1f(glGetUniformLocation(program,"rotY"),rotY);
 
