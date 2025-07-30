@@ -39,7 +39,7 @@ if (ENVIRONMENT_IS_NODE) {
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /tmp/tmphjynzsoi.js
+// include: /tmp/tmpfso56_uz.js
 
   if (!Module['expectedDataFileDownloads']) {
     Module['expectedDataFileDownloads'] = 0;
@@ -216,25 +216,25 @@ Module['FS_createPath']("/", "asserts", true, true);
     }
 
     }
-    loadPackage({"files": [{"filename": "/asserts/cubbe.obj", "start": 0, "end": 1560}, {"filename": "/asserts/cube.mtl", "start": 1560, "end": 1663}, {"filename": "/asserts/cube.obj", "start": 1663, "end": 1994}, {"filename": "/asserts/cube2.obj", "start": 1994, "end": 2367}, {"filename": "/asserts/cube_texture.png", "start": 2367, "end": 36695}, {"filename": "/asserts/tmp", "start": 36695, "end": 36699}], "remote_package_size": 36699});
+    loadPackage({"files": [{"filename": "/asserts/cubbe.obj", "start": 0, "end": 1560}, {"filename": "/asserts/cube.mtl", "start": 1560, "end": 1663}, {"filename": "/asserts/cube.obj", "start": 1663, "end": 2149}, {"filename": "/asserts/cube2.obj", "start": 2149, "end": 2522}, {"filename": "/asserts/cube_texture.png", "start": 2522, "end": 36850}, {"filename": "/asserts/tmp", "start": 36850, "end": 36854}], "remote_package_size": 36854});
 
   })();
 
-// end include: /tmp/tmphjynzsoi.js
-// include: /tmp/tmp1tpluzxb.js
+// end include: /tmp/tmpfso56_uz.js
+// include: /tmp/tmpbdn8sxg2.js
 
     // All the pre-js content up to here must remain later on, we need to run
     // it.
     if (Module['$ww'] || (typeof ENVIRONMENT_IS_PTHREAD != 'undefined' && ENVIRONMENT_IS_PTHREAD)) Module['preRun'] = [];
     var necessaryPreJSTasks = Module['preRun'].slice();
-  // end include: /tmp/tmp1tpluzxb.js
-// include: /tmp/tmpgw5_79fe.js
+  // end include: /tmp/tmpbdn8sxg2.js
+// include: /tmp/tmp2rskgw9m.js
 
     if (!Module['preRun']) throw 'Module.preRun should exist because file support used it; did a pre-js delete it?';
     necessaryPreJSTasks.forEach((task) => {
       if (Module['preRun'].indexOf(task) < 0) throw 'All preRun tasks that exist before user pre-js code should remain after; did you replace Module or modify Module.preRun?';
     });
-  // end include: /tmp/tmpgw5_79fe.js
+  // end include: /tmp/tmp2rskgw9m.js
 
 
 // Sometimes an existing Module object exists with properties
