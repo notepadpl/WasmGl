@@ -23,7 +23,7 @@ const char* vs = R"(
 )";
 const char* fs = R"(
     precision mediump float;
-    void main() { gl_FragColor = vec4(0.8, 0.3, 0.3, 1.0); }
+    void main() { gl_FragColor = vec4(1.0); }
 )";
 
 // (funkcja compileShader jak wcześniej)...
@@ -36,6 +36,8 @@ bool init() {
     window = SDL_CreateWindow("OBJ Viewer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               640, 480, SDL_WINDOW_OPENGL);
     glContext = SDL_GL_CreateContext(window);
+    glViewport(0, 0, 640, 480);
+
     glClearColor(0.1f, 0.9f, 0.1f, 1.0f); // zielone tło
 
 
@@ -66,7 +68,8 @@ void render() {
     glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+   // glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_SHORT, 0);
 
     SDL_GL_SwapWindow(window);
 }
